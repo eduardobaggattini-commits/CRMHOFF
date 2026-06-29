@@ -1,6 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
-import { obterEnvObrigatoria } from "@/lib/env";
+import { exigirEnv } from "@/lib/env";
 
 // Cliente do Supabase para ser usado em Server Components, Server Actions
 // e Route Handlers (código que roda no servidor, não no navegador).
@@ -8,8 +8,8 @@ export async function createClient() {
   const cookieStore = await cookies();
 
   return createServerClient(
-    obterEnvObrigatoria("NEXT_PUBLIC_SUPABASE_URL"),
-    obterEnvObrigatoria("NEXT_PUBLIC_SUPABASE_ANON_KEY"),
+    exigirEnv(process.env.NEXT_PUBLIC_SUPABASE_URL, "NEXT_PUBLIC_SUPABASE_URL"),
+    exigirEnv(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY, "NEXT_PUBLIC_SUPABASE_ANON_KEY"),
     {
       cookies: {
         getAll() {
