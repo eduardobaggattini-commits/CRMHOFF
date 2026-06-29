@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { login } from "./actions";
 
 export default async function LoginPage({
@@ -64,6 +65,12 @@ export default async function LoginPage({
             Entrar
           </button>
         </form>
+
+        <p className="mt-4 text-center text-sm">
+          <Link href="/esqueci-senha" className="font-medium text-indigo-600 underline hover:text-indigo-700">
+            Esqueci minha senha
+          </Link>
+        </p>
 
         <p className="mt-6 text-center text-sm text-slate-500">
           Sua conta é criada pelo administrador do sistema.

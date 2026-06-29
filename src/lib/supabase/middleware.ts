@@ -3,6 +3,11 @@ import { NextResponse, type NextRequest } from "next/server";
 import { exigirEnv } from "@/lib/env";
 
 const ROTAS_PUBLICAS = ["/login", "/cadastro"];
+// Acessíveis tanto logado quanto deslogado — nunca redirecionam pra fora.
+// /redefinir-senha precisa disso: a pessoa chega ali com uma sessão de
+// recuperação válida (criada pelo /auth/callback), mas não deve ser jogada
+// pra Home como aconteceria com uma rota pública normal.
+const ROTAS_SEMPRE_ACESSIVEIS = ["/esqueci-senha", "/redefinir-senha", "/auth/callback"];
 
 // Roda em toda requisição: renova a sessão do usuário e bloqueia o acesso
 // a páginas internas quando a pessoa não está logada.
@@ -35,8 +40,11 @@ export async function updateSession(request: NextRequest) {
   const ehRotaPublica = ROTAS_PUBLICAS.some((rota) =>
     request.nextUrl.pathname.startsWith(rota),
   );
+  const ehRotaSempreAcessivel = ROTAS_SEMPRE_ACESSIVEIS.some((rota) =>
+    request.nextUrl.pathname.startsWith(rota),
+  );
 
-  if (!user && !ehRotaPublica) {
+  if (!user && !ehRotaPublica && !ehRotaSempreAcessivel) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);
